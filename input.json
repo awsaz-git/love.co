@@ -1,0 +1,598 @@
+[
+    {
+        "code": "ZRWPUL",
+        "name": "Nike Springboks Long-Sleeve",
+        "brand_name": "nike",
+        "price": 50,
+        "discount": 0,
+        "description": "Celebrate the Springboks' heritage with this long-sleeve rugby top. Pair with shorts or jeans and enjoy the exceptional craftsmanship, fit and materials.",
+        "details": {
+            "material": "100% cotton",
+            "care": "Machine wash",
+            "fit": "Standard Fit"
+        },
+        "gender": "men",
+        "style_name": "vintage",
+        "category_name": "tops",
+        "colors": [
+            {
+                "name": "green",
+                "hex": "#173518",
+                "images": [
+                    "/images/green-nike1.avif",
+                    "/images/green-nike2.avif",
+                    "/images/green-nike3.avif",
+                    "/images/green-nike4.avif",
+                    "/images/green-nike5.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "S",
+                        "stock": 5
+                    },
+                    {
+                        "name": "M",
+                        "stock": 1
+                    },
+                    {
+                        "name": "L",
+                        "stock": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "code": "YJAUGY",
+        "name": "Linen Suit Trouser",
+        "brand_name": "ralph_lauren",
+        "price": 145,
+        "discount": 10,
+        "description": "These pleated trousers are meticulously tailored using an Italian linen cloth that was custom-developed for Ralph Lauren.",
+        "details": {
+            "shell": "linen.",
+            "lining": "acetate, viscose.",
+            "fit": "Lined to the knee.",
+            "origin": "Portugal",
+            "side_adjusters": "Belt loop. Zip fly with an extended buttoned closure. Curtain waistband. Double-pleated front."
+        },
+        "gender": "men",
+        "style_name": "formal",
+        "category_name": "bottoms",
+        "colors": [
+            {
+                "name": "black",
+                "hex": "#000000",
+                "images": [
+                    "/images/lauren2.avif",
+                    "/images/lauren3.avif",
+                    "/images/lauren4.avif",
+                    "/images/lauren1.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "29",
+                        "stock": 2
+                    },
+                    {
+                        "name": "30",
+                        "stock": 3
+                    },
+                    {
+                        "name": "31",
+                        "stock": 3
+                    },
+                    {
+                        "name": "32",
+                        "stock": 4
+                    },
+                    {
+                        "name": "33",
+                        "stock": 4
+                    },
+                    {
+                        "name": "34",
+                        "stock": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "code": "L4GJME",
+        "name": "Polo Navy T-Shirt",
+        "brand_name": "ralph_lauren",
+        "price": 60,
+        "discount": 15,
+        "description": "A timeless essential, the Ralph Lauren Navy Polo T-Shirt blends comfort with iconic style. Crafted from breathable cotton, it features the signature embroidered pony, a two-button placket, and a ribbed collar. Dress it up or down — a true wardrobe staple.",
+        "details": {
+            "material": "100% cotton",
+            "fit": "Custom Slim Fit",
+            "collar": "Ribbed polo collar",
+            "placket": "Two-button placket",
+            "hem": "Tennis tail",
+            "logo": "Signature embroidered Pony at the left chest"
+        },
+        "gender": "men",
+        "style_name": "formal",
+        "category_name": "tops",
+        "colors": [
+            {
+                "name": "navy_blue",
+                "hex": "#000080",
+                "images": [
+                    "/images/ralph1.avif",
+                    "/images/ralph2.avif",
+                    "/images/ralph3.avif",
+                    "/images/ralph4.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "S",
+                        "stock": 0
+                    },
+                    {
+                        "name": "M",
+                        "stock": 5
+                    },
+                    {
+                        "name": "L",
+                        "stock": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "code": "YLUV9T",
+        "name": "French Terry Quarter Zip",
+        "brand_name": "calvin_klein",
+        "price": 50,
+        "discount": 0,
+        "description": "Relaxed comfort in soft cotton blend terry. This sweatshirt is detailed with logo embroidery at the upper chest. Styled with a quarter zip closure and a mock neck.",
+        "details": {
+            "material": "86% cotton 14% polyester",
+            "fit": "Relaxed fit",
+            "collar": "Mock neck",
+            "car": "Machine wash",
+            "hem": "Tennis tail",
+            "logo": "Embroidered logo detail."
+        },
+        "gender": "men",
+        "style_name": "casual",
+        "category_name": "tops",
+        "colors": [
+            {
+                "name": "blue",
+                "hex": "#0000FF",
+                "images": [
+                    "/images/calvinblue1.webp",
+                    "/images/calvinblue2.webp",
+                    "/images/calvinblue3.webp",
+                    "/images/calvinblue4.webp"
+                ],
+                "sizes": [
+                    {
+                        "name": "XS",
+                        "stock": 5
+                    },
+                    {
+                        "name": "S",
+                        "stock": 1
+                    },
+                    {
+                        "name": "M",
+                        "stock": 1
+                    }
+                ]
+            },
+            {
+                "name": "beige",
+                "hex": "#F5F5DC",
+                "images": [
+                    "/images/calvin1.webp",
+                    "/images/calvin2.webp",
+                    "/images/calvin3.webp",
+                    "/images/calvin4.webp"
+                ],
+                "sizes": [
+                    {
+                        "name": "S",
+                        "stock": 2
+                    },
+                    {
+                        "name": "M",
+                        "stock": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "code": "TG24A8",
+        "name": "F50 Pro Firm Ground Cleats",
+        "brand_name": "adidas",
+        "price": 100,
+        "discount": 0,
+        "description": "Find your fast to truly express yourself on the field. Feel the rush in adidas F50 cleats engineered for speed. The lightweight Fibertouch upper on these Pro soccer cleats has Sprintweb 3D texturing for keeping the ball close, and a Compression Fit Tunnel Tongue for lockdown. Underneath, a Sprintshell 360 outsole supports rapid play on dry grass.",
+        "details": {
+            "fit": "Regular fit",
+            "lining": "Synthetic lining",
+            "closure": "Lace closure",
+            "outsole": "Sprintshell 360 firm ground outsole."
+        },
+        "gender": "unisex",
+        "style_name": "performance",
+        "category_name": "footwear",
+        "colors": [
+            {
+                "name": "pink",
+                "hex": "#FFC0CB",
+                "images": [
+                    "/images/lamine1.avif",
+                    "/images/lamine2.avif",
+                    "/images/lamine3.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "8",
+                        "stock": 2
+                    },
+                    {
+                        "name": "9",
+                        "stock": 3
+                    },
+                    {
+                        "name": "10",
+                        "stock": 3
+                    },
+                    {
+                        "name": "11",
+                        "stock": 3
+                    }
+                ]
+            },
+            {
+                "name": "black",
+                "hex": "#000000",
+                "images": [
+                    "/images/lamine-black-1.avif",
+                    "/images/lamine-black-2.avif",
+                    "/images/lamine-black-3.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "8",
+                        "stock": 2
+                    },
+                    {
+                        "name": "9",
+                        "stock": 3
+                    },
+                    {
+                        "name": "10",
+                        "stock": 3
+                    },
+                    {
+                        "name": "11",
+                        "stock": 3
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "code": "TGLMNY",
+        "name": "Air Jordan 1 Origin Story - Miles Morales",
+        "brand_name": "nike",
+        "price": 210,
+        "discount": 0,
+        "description": "Inspired by the iconic pair worn by Miles Morales in *Spider-Man: Into the Spider-Verse*, these Air Jordan 1s bring superhero energy to every step. With reflective dot detailing and the classic Chicago colorway, they’re a bold twist on a timeless silhouette.",
+        "details": {
+            "material": "Leather and synthetic upper",
+            "fit": "High-top silhouette",
+            "closure": "Lace-up",
+            "outsole": "Rubber with pivot point traction pattern",
+            "inspiration": "Designed in tribute to Miles Morales' Spider-Man"
+        },
+        "gender": "unisex",
+        "style_name": "casual",
+        "category_name": "footwear",
+        "colors": [
+            {
+                "name": "red",
+                "hex": "#FF0000",
+                "images": [
+                    "/images/air-jordan-1-origin-story1.avif",
+                    "/images/air-jordan-1-origin-story2.avif",
+                    "/images/air-jordan-1-origin-story3.avif",
+                    "/images/air-jordan-1-origin-story4.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "8",
+                        "stock": 2
+                    },
+                    {
+                        "name": "9",
+                        "stock": 3
+                    },
+                    {
+                        "name": "10",
+                        "stock": 3
+                    },
+                    {
+                        "name": "11",
+                        "stock": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "code": "YG33EN",
+        "name": "Iconic T7 Mens Track Pants",
+        "brand_name": "puma",
+        "price": 35,
+        "discount": 0,
+        "description": "Straight out of the '70s PUMA Archives, the T7 gets a fresh update, and this time we've reworked the OG track pants with a much more relaxed vibe. It features a looser fit than the OG track pants, and straight legs with open cuffs. Of course, the signature stripes are still on the sides.",
+        "details": {
+            "material": "59% polyester, 41% cotton",
+            "weight": "320 gsm, French terry material",
+            "fit": "Relaxed fit",
+            "waistband": "Elastic waistband with external drawcord",
+            "car": "Do not iron print. Use only mild detergent. Wash and iron inside out"
+        },
+        "gender": "male",
+        "style_name": "vintage",
+        "category_name": "bottoms",
+        "colors": [
+            {
+                "name": "black",
+                "hex": "#000000",
+                "images": [
+                    "/images/puma1.avif",
+                    "/images/puma2.avif",
+                    "/images/puma3.avif",
+                    "/images/puma4.avif",
+                    "/images/puma5.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "S",
+                        "stock": 2
+                    },
+                    {
+                        "name": "L",
+                        "stock": 3
+                    },
+                    {
+                        "name": "XL",
+                        "stock": 3
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "code": "ZZAAEG",
+        "name": "Samba OG",
+        "brand_name": "adidas",
+        "price": 85,
+        "discount": 10,
+        "description": "Born on the pitch, the Samba is a timeless icon of street style. This silhouette stays true to its legacy with a tasteful, low-profile, soft leather upper, suede overlays and gum sole, making it a staple in everyone's closet - on and off the pitch.",
+        "details": {
+            "fit": "Regular fit",
+            "closure": "Lace closure",
+            "lining": "Synthetic leather lining; Gum rubber cupsole",
+            "material": "Full grain leather upper with gritty suede and gold foil details"
+        },
+        "gender": "unisex",
+        "style_name": "casual",
+        "category_name": "footwear",
+        "colors": [
+            {
+                "name": "white",
+                "hex": "#FFFFFF",
+                "images": [
+                    "/images/samba1.avif",
+                    "/images/samba2.avif",
+                    "/images/samba3.avif",
+                    "/images/samba4.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "7",
+                        "stock": 3
+                    },
+                    {
+                        "name": "8",
+                        "stock": 1
+                    },
+                    {
+                        "name": "9",
+                        "stock": 5
+                    },
+                    {
+                        "name": "10",
+                        "stock": 5
+                    },
+                    {
+                        "name": "11",
+                        "stock": 2
+                    }
+                ]
+            },
+            {
+                "name": "black",
+                "hex": "#000000",
+                "images": [
+                    "/images/sambablack1.avif",
+                    "/images/sambablack2.avif",
+                    "/images/sambablack3.avif",
+                    "/images/sambablack4.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "7",
+                        "stock": 3
+                    },
+                    {
+                        "name": "8",
+                        "stock": 1
+                    },
+                    {
+                        "name": "9",
+                        "stock": 5
+                    },
+                    {
+                        "name": "10",
+                        "stock": 5
+                    },
+                    {
+                        "name": "11",
+                        "stock": 2
+                    }
+                ]
+            },
+            {
+                "name": "green",
+                "hex": "#173518",
+                "images": [
+                    "/images/samba-green1.avif",
+                    "/images/samba-green2.avif",
+                    "/images/samba-green3.avif",
+                    "/images/samba-green4.avif"
+                ],
+                "sizes": [
+                    {
+                        "name": "7",
+                        "stock": 3
+                    },
+                    {
+                        "name": "8",
+                        "stock": 1
+                    },
+                    {
+                        "name": "9",
+                        "stock": 5
+                    },
+                    {
+                        "name": "10",
+                        "stock": 5
+                    },
+                    {
+                        "name": "11",
+                        "stock": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "code": "GU44HT",
+        "name": "Loose Straight Denim Dungaree Pants",
+        "brand_name": "carhartt",
+        "price": 30,
+        "discount": 10,
+        "description": "These men's jeans are tough enough for the job, but comfortable enough for the weekend. Constructed from a durable midweight denim that only gets better with time, the built-in stretch and generous loose fit allows you to move freely while you work. Utility pockets on the sides provide additonal storage options for your most-used tools and accessories.",
+        "details": {
+            "material": "100% cotton washed denim",
+            "weight": "13-ounce",
+            "fit": "Relaxed fit"
+        },
+        "gender": "male",
+        "style_name": "casual",
+        "category_name": "bottoms",
+        "colors": [
+            {
+                "name": "navy_blue",
+                "hex": "#000080",
+                "images": [
+                    "/images/car1.png",
+                    "/images/car2.png"
+                ],
+                "sizes": [
+                    {
+                        "name": "W28",
+                        "stock": 2
+                    },
+                    {
+                        "name": "W29",
+                        "stock": 1
+                    },
+                    {
+                        "name": "W30",
+                        "stock": 4
+                    },
+                    {
+                        "name": "W31",
+                        "stock": 3
+                    },
+                    {
+                        "name": "W32",
+                        "stock": 2
+                    },
+                    {
+                        "name": "W33",
+                        "stock": 2
+                    },
+                    {
+                        "name": "W34",
+                        "stock": 4
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "code": "3N3QM4",
+        "name": "Chuck Tylor All Star Lift Platform Archive Stars",
+        "brand_name": "converse",
+        "price": 65,
+        "discount": 0,
+        "description": "If you've been manifesting starry platform Chucks, consider your wish granted. These star-studded high tops complete your look in signature All Star style.",
+        "details": {
+            "material": "Durable canvas upper for that classic Chucks look and feel",
+            "license_plate": "Iconic Chuck Taylor ankle patch and All Star license plate",
+            "platform": "An elevated platform ups the height",
+            "style": "Screenprinted stars express your style"
+        },
+        "gender": "women",
+        "style_name": "casual",
+        "category_name": "footwear",
+        "colors": [
+            {
+                "name": "black",
+                "hex": "#000000",
+                "images": [
+                    "/images/chuckswomen1.webp",
+                    "/images/chuckswomen2.webp",
+                    "/images/chuckswomen3.webp",
+                    "/images/chuckswomen4.webp",
+                    "/images/chuckswomen5.webp",
+                    "/images/chuckswomen6.webp",
+                    "/images/chuckswomen7.webp"
+                ],
+                "sizes": [
+                    {
+                        "name": "7",
+                        "stock": 2
+                    },
+                    {
+                        "name": "8",
+                        "stock": 2
+                    },
+                    {
+                        "name": "9",
+                        "stock": 1
+                    },
+                    {
+                        "name": "10",
+                        "stock": 4
+                    }
+                ]
+            }
+        ]
+    }
+]
