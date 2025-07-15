@@ -1,7 +1,7 @@
 import express from 'express';
 import sequelize from './db.js';
 import './models/index.js'
-import { getBrands, getNewArrivals, getOnSale, getProduct, completeTheLook, youMayAlsoLike, getCategories, getProductsWithFilter, getStyles, getAllProducts } from './filters.js'
+import { getBrands, getNewArrivals, getOnSale, getProduct, completeTheLook, youMayAlsoLike, getCategories, getProductsWithFilter, getStyles, getAllProducts, search, getProductBySKU } from './filters.js'
 import cors from 'cors'
 
 const app = express();
@@ -70,12 +70,35 @@ app.get('/api/products/:filters', async (req, res) => {
         const categories = await getCategories()
         const brands = await getBrands()
         const styles = await getStyles()
-        const products = await getProductsWithFilter(req.params.filters, req.query.price)
+        const products = await getProductsWithFilter(req.params.filters, req.query.price, req.query.search)
 
         res.json({ categories, brands, styles, products })
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Failed to fetch products' })
+    }
+})
+
+app.get('/api/search', async (req, res) => {
+    try {
+        const searchQuery = req.query.searchValue || ''
+        const products = await search(searchQuery.split(' ').join(' and '))
+
+        res.json({ products })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to search for products' })
+    }
+})
+
+app.get('/api/product-sku', async (req, res) => {
+    try {
+        const [product] = await getProductBySKU(req.query.sku)
+
+        res.json({ product })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to get product' })
     }
 })
 

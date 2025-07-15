@@ -4,6 +4,7 @@ import { ref, watch } from 'vue'
 const props = defineProps({
     placeholder: String,
     icon: Function,
+    type: String,
     padding: String
 })
 
@@ -16,8 +17,8 @@ const isSelected = ref(false)
         padding: props.padding || '10px 20px'
     }">
         <component color="#00000040" :is="icon" />
-        <input @focus="isSelected = true" @blur="isSelected = false" class="subtitle-l input-container"
-            :placeholder="placeholder" v-model="model" />
+        <input @focus="isSelected = true" @blur="isSelected = false" :type="props.type || 'text'"
+            class="subtitle-l input-container" :placeholder="placeholder" v-model="model" />
     </div>
 </template>
 

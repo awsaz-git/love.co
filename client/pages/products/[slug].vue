@@ -6,8 +6,15 @@ import { useSelectedFilters } from '~/stores/filters'
 const route = useRoute()
 const router = useRouter()
 const slug = route.params.slug
+const queryParams = new URLSearchParams()
 
-let { data, error } = await useFetch('http://localhost:5000/api/products/' + slug)
+if (route.query.price) queryParams.append('price', route.query.price)
+if (route.query.search) queryParams.append('search', route.query.search)
+
+const url = `http://localhost:5000/api/products/${slug}` +
+    (queryParams.toString() ? `?${queryParams.toString()}` : '')
+
+let { data, pending, error } = await useFetch(url)
 
 const slugArray = slug.split('-')
 
@@ -26,6 +33,8 @@ const selectedFilters = useSelectedFilters()
 const reloadKey = ref(0)
 const priceSort = ref('')
 const isNotFilter = ref(false)
+const hasSearchQuery = ref(false)
+const searchQuery = ref('')
 
 const isSidebarOpen = useSidebarStore()
 
@@ -52,11 +61,18 @@ const fillFilters = () => {
     if (categories.value.length > 0) {
         currentSelector.value = categories.value
     }
+
     const params = new URLSearchParams(route.query)
+
     if (params.has('price')) {
         priceSort.value = params.get('price')
     }
-
+    if (params.has('search')) {
+        hasSearchQuery.value = true
+        searchQuery.value = params.get('search')
+    } else {
+        hasSearchQuery.value = false
+    }
 }
 
 const fillCategories = () => {
@@ -73,7 +89,9 @@ const fillCategories = () => {
     fillFilters()
 }
 
-fillCategories()
+onMounted(() => {
+    fillCategories()
+})
 
 const header = ref(unslugify(slugArray.join(' ').replaceAll('&', ', ')).join())
 
@@ -136,14 +154,26 @@ const updateURL = async () => {
         newSlug = 'all'
     }
 
-    await router.push(`/products/${newSlug}`)
+    await router.push({
+        path: `/products/${newSlug}`,
+        query: route.query // preserve current query
+    })
 
     const newSlugArray = newSlug.split('-')
     header.value = unslugify(newSlugArray.join(' ').replaceAll('&', ', ')).join()
 
-    const { data: newData, error: newError } = await useFetch('http://localhost:5000/api/products/' + newSlug)
+    const queryParams = new URLSearchParams()
+
+    if (route.query.price) queryParams.append('price', route.query.price)
+    if (route.query.search) queryParams.append('search', route.query.search)
+
+    const url = `http://localhost:5000/api/products/${newSlug}` +
+        (queryParams.toString() ? `?${queryParams.toString()}` : '')
+
+    let { data, pending, error } = await useFetch(url)
     data.value = newData.value
     error.value = newError.value
+    pending.value = newPending.value
 }
 
 const reload = () => {
@@ -188,8 +218,9 @@ const sort = async (name) => {
 
     console.log(fullUrl)
 
-    const { data: newData, error: newError } = await useFetch(fullUrl)
+    const { data: newData, pending: newPending, error: newError } = await useFetch(fullUrl)
     data.value = newData.value
+    pending.value = newPending.value
     error.value = newError.value
 
     reload()
@@ -208,6 +239,10 @@ const sort = async (name) => {
             </div>
             <div class="header-m header">
                 {{ unslugify(header).join() }}
+            </div>
+            <div v-if="hasSearchQuery" class="title-m">
+                Showing results for '{{ searchQuery }}' <span class="opacity-medium">({{ data.products.length
+                }})</span>
             </div>
             <div class="selector-wrapper">
                 <div class="selector-container">
@@ -442,9 +477,6 @@ const sort = async (name) => {
     opacity: 1;
 }
 
-
-
-
 .products-canvas {
     display: flex;
     flex-direction: column;
@@ -467,6 +499,7 @@ const sort = async (name) => {
     align-items: center;
     flex: 1;
     overflow-x: auto;
+    padding-right: 25px;
     scrollbar-width: none;
     -ms-overflow-style: none;
     border-bottom: 1px solid #00000020;
@@ -555,10 +588,28 @@ const sort = async (name) => {
     }
 }
 
+@media (max-width: 960px) {
+    .nav-sidebar-container {
+        height: 100svh;
+    }
+
+    .sidebar-container {
+        height: 100svh;
+    }
+
+    .overlay {
+        height: 100svh;
+    }
+}
+
 @media (max-width: 768px) {
     .cards {
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px
+        gap: 10px;
+    }
+
+    .products-container {
+        width: 98%;
     }
 
     .products-content {

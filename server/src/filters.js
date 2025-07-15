@@ -128,10 +128,24 @@ const getAllProducts = async () => {
     `);
 }
 
-const getProductsWithFilter = async (param, price) => {
+const getProductBySKU = async (sku) => {
+    return await sequelize.query(`
+            SELECT * FROM cart_item_view WHERE sku = $1
+    `, {
+        bind: [sku],
+        type: sequelize.QueryTypes.SELECT
+    });
+}
+
+const getProductsWithFilter = async (param, price, search) => {
     let query = `SELECT * FROM product_card_view`
     const values = []
     let bindIndex = 1
+
+    if (search) {
+        query = `SELECT * FROM search_products($${bindIndex++})`
+        values.push(search.split(' ').join(' and '))
+    }
 
     const filters = param.split('-').flatMap(el => el.split('&'))
 
@@ -218,7 +232,13 @@ const getProductsWithFilter = async (param, price) => {
     })
 }
 
+const search = async (searchQuery) => {
 
+    return await sequelize.query(`SELECT * FROM search_products($1) LIMIT 6`, {
+        bind: [searchQuery],
+        type: sequelize.QueryTypes.SELECT
+    })
+}
 
 export {
     getBrands,
@@ -230,5 +250,7 @@ export {
     getCategories,
     getProductsWithFilter,
     getStyles,
-    getAllProducts
+    getAllProducts,
+    search,
+    getProductBySKU
 }

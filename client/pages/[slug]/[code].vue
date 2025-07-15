@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, nextTick, capitalize } from 'vue'
 import { useRoute } from 'vue-router'
 import { Check, ArrowDown, ArrowUp, Minus, Plus, AlertCircle } from 'lucide-vue-next'
+import { getData, setData } from 'nuxt-storage/local-storage';
 
 const route = useRoute()
 const code = route.params.code
@@ -21,8 +22,8 @@ const isAtBottom = ref(false)
 const reviewsShown = ref(6)
 const shownSuggestions = ref(4)
 const miniImagesWrapper = ref(null)
-
-const items = ref([])
+const modal = useModal()
+const stockError = ref(false)
 
 const { data, error } = await useFetch('http://localhost:5000/api/product-code/' + code)
 
@@ -50,6 +51,7 @@ const changeSize = (index, colorList) => {
     selectedSize.value = index;
     quantity.value = 1
     sizeError.value = false
+    stockError.value = false
 }
 
 function getDiscount(price, discount) {
@@ -69,6 +71,7 @@ function getStock(colorList) {
 }
 
 function getSizeStock(index, colorsList) {
+    if (!index) return
     let stock = colorsList[selectedColor.value].sizes[index].stock
     return stock
 }
@@ -115,6 +118,7 @@ function decrementQuantity() {
             selectedSize.value = null
         }
     }
+    stockError.value = false
 }
 
 function incrementQuantity(colorsList) {
@@ -124,14 +128,39 @@ function incrementQuantity(colorsList) {
     if (getSizeStock(selectedSize.value, colorsList) > quantity.value) {
         quantity.value++;
     }
+    stockError.value = false
 }
 
-function addToCart() {
+const addToCart = async (color, size) => {
     if (selectedSize.value === null) {
         sizeError.value = true
         return
     }
+
+    const sku = code.toUpperCase() + '-' + color.toUpperCase() + '-' + size.toUpperCase()
+    let cart = getData('cart') || []
+
+    const itemIndex = cart.findIndex(item => item.sku === sku)
+
+    const { data } = await useFetch('http://localhost:5000/api/product-sku', {
+        query: { sku }
+    })
+
+    if (itemIndex !== -1) {
+        if (cart[itemIndex].quantity < data.value.product.stock) {
+            cart[itemIndex].quantity += quantity.value
+        } else {
+            stockError.value = true;
+            return
+        }
+    } else {
+        cart.push({ sku, quantity: quantity.value })
+    }
+
+    setData('cart', cart, 24, 'h')
+    modal.open('addedToCart', quantity.value)
 }
+
 
 function changeSelector(name) {
     selector.value = name
@@ -223,7 +252,8 @@ onMounted(miniImagesWrapper.value, () => {
                             </NuxtImg>
                         </div>
                         <transition name="fade">
-                            <div v-if="!isAtBottom && isMouseover" @click="scrollDown()" class="scroll-button down">
+                            <div v-if="!isAtBottom && isMouseover && miniImagesRef.scrollHeight > miniImagesWrapper.clientHeight"
+                                @click="scrollDown()" class="scroll-button down">
                                 <ArrowDown :stroke-width="1" :size="16" />
                             </div>
                         </transition>
@@ -246,8 +276,7 @@ onMounted(miniImagesWrapper.value, () => {
                     </div>
                     <div class="slider-indicator-container">
                         <div class="slider-indicator"
-                            v-for="(image, index) in data.product.colors[selectedColor].images"
-                            :class="{ displayed: displayedImage === index }" :key="index">
+                            v-for="(image, index) in data.product.colors[selectedColor].images" :key="index">
                         </div>
                     </div>
                 </div>
@@ -299,7 +328,11 @@ onMounted(miniImagesWrapper.value, () => {
                         <AlertCircle :size="18" color="#B7000D" />
                         PLEASE SELECT A SIZE
                     </div>
-                    <div v-if="!sizeError" class="title-m normal">
+                    <div v-if="stockError" class="title-m normal size-error">
+                        <AlertCircle :size="18" color="#B7000D" />
+                        MAX STOCK REACHED FOR THIS SIZE
+                    </div>
+                    <div v-if="!sizeError && !stockError" class="title-m normal">
                         Sizes
                     </div>
                     <div class="colors-container">
@@ -312,9 +345,6 @@ onMounted(miniImagesWrapper.value, () => {
                     <template v-if="selectedSize !== null">
                         <div v-if="data.product.colors[selectedColor].sizes[selectedSize].measurements"
                             class="measurements-container">
-                            <div class="subtitle-m">
-                                Measurements:
-                            </div>
                             <div class="measurement">
                                 <div v-for="([key, value]) in Object.entries(data.product.colors[selectedColor].sizes[selectedSize].measurements)"
                                     class="subtitle-m">
@@ -336,7 +366,9 @@ onMounted(miniImagesWrapper.value, () => {
                         <Plus @click="incrementQuantity(data.product.colors)" class="quantity-button" :size="18" />
                     </div>
                     <ButtonsFilled v-if="getStock(data.product.colors) !== 0" height="45px" width="70%"
-                        label="ADD TO BAG" @click="addToCart()" />
+                        label="ADD TO BAG" @click="addToCart(data.product.colors[selectedColor].name,
+                            data.product.colors[selectedColor].sizes[selectedSize]?.name)"
+                        :class="{ 'stock-error': stockError }" />
                     <ButtonsFilled v-if="getStock(data.product.colors) === 0" height="45px" width="70%" disabled
                         disabledLabel="OUT OF STOCK" />
                 </div>
@@ -386,7 +418,7 @@ onMounted(miniImagesWrapper.value, () => {
                         ({{ data.product.reviews?.length || '0' }})
                     </div>
                 </div>
-                <ButtonsFilled label="Write a Review" width="25%" />
+                <ButtonsFilled class="review-button subtitle-l" label="Write a Review" width="25%" />
             </div>
             <div v-if="data.product.reviews" class="reviews-grid">
                 <CardsReview v-for="review in data.product.reviews.slice(0, reviewsShown)" :data="review" />
@@ -467,7 +499,8 @@ onMounted(miniImagesWrapper.value, () => {
     position: relative;
     flex-direction: column;
     align-items: center;
-    width: 25%;
+    width: 15%;
+    height: 100%;
 }
 
 .mini-images {
@@ -533,9 +566,9 @@ onMounted(miniImagesWrapper.value, () => {
 }
 
 .mini-images img {
-    aspect-ratio: 1/1;
+    aspect-ratio: 1 / 1;
     width: 100%;
-    height: calc((100% - 10px) / 3);
+    height: auto;
     box-sizing: border-box;
     object-fit: cover;
     object-position: center;
@@ -566,9 +599,10 @@ onMounted(miniImagesWrapper.value, () => {
 }
 
 .big-image img {
+    height: 100%;
     width: 100%;
     background-color: var(--secondary-3);
-    object-fit: scale-down;
+    object-fit: cover;
     object-position: center;
 }
 
@@ -610,6 +644,10 @@ onMounted(miniImagesWrapper.value, () => {
 
 .quantity-button {
     cursor: pointer;
+}
+
+.stock-error {
+    cursor: not-allowed;
 }
 
 .discount {
@@ -928,6 +966,10 @@ li.description-item {
     .images-display {
         height: 450px;
     }
+
+    .review-button {
+        width: 40% !important;
+    }
 }
 
 @media (max-width: 1024px) {
@@ -969,6 +1011,7 @@ li.description-item {
     .big-image {
         position: relative;
         border-radius: 0px;
+        width: 100%;
     }
 
     .big-image-tablet {
@@ -977,17 +1020,19 @@ li.description-item {
         flex-direction: row;
         align-items: center;
         overflow-x: auto;
+        flex-grow: unset;
         scrollbar-width: 0;
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
         -ms-overflow-style: none;
         height: fit-content;
+        width: 100%;
     }
 
     .big-image-tablet img {
         aspect-ratio: 1/1;
-        height: 100%;
         width: 100%;
+        height: 100%;
         background-color: var(--secondary-3);
         object-fit: cover;
         object-position: center;
@@ -1083,6 +1128,39 @@ li.description-item {
     .brand-logo {
         height: 25px;
     }
+
+    .review-button {
+        padding: 10px 5px !important;
+        width: 50% !important;
+    }
+
+    .reviews-container {
+        width: 80%;
+    }
+
+    .reviews-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .review-button {
+        padding: 10px 20px !important;
+        width: 70% !important;
+    }
+
+    .reviews-container {
+        width: 95%;
+    }
+
+    .reviews-header {
+        width: 90%;
+    }
+
+    .selector-container {
+        width: 100%;
+    }
 }
 
 @media (max-width: 425px) {
@@ -1092,6 +1170,11 @@ li.description-item {
 
     .quantity-container {
         padding: 10px;
+    }
+
+    .review-button {
+        padding: 10px 5px !important;
+        width: 70% !important;
     }
 }
 </style>

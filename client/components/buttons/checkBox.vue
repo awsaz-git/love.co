@@ -5,17 +5,11 @@ const props = defineProps({
     selected: Boolean
 })
 
-const isSelected = ref(props.selected || false)
-
-const toggle = () => {
-    isSelected.value = !isSelected.value
-}
-
 </script>
 
 <template>
-    <div @click="toggle()" class="checkbox-container" :class="{ selected: isSelected }">
-        <Check v-if="isSelected" :size="15" color="#FFFFFF" />
+    <div class="checkbox-container" :class="{ selected: props.selected }">
+        <Check v-if="props.selected" :size="15" color="#FFFFFF" />
     </div>
 </template>
 

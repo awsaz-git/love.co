@@ -1,5 +1,11 @@
 <script setup>
 import { Mail } from 'lucide-vue-next';
+
+const email = ref('')
+
+const handleSubmit = async () => {
+
+}
 </script>
 
 <template>
@@ -11,9 +17,10 @@ import { Mail } from 'lucide-vue-next';
             </div>
             <div class="newsletter-content">
                 <div class="email-field">
-                    <ButtonsInputField :icon="Mail" padding="15px 20px" placeholder="Enter your email address" />
+                    <ButtonsInputField v-model="email" type="email" :icon="Mail" padding="15px 20px"
+                        placeholder="Enter your email address" />
                 </div>
-                <ButtonsUnfilled class="newsletter-button" label="Subscribe" width="100%" />
+                <ButtonsUnfilled @click="handleSubmit()" class="newsletter-button" label="Subscribe" width="100%" />
             </div>
         </div>
         <div class="footer-content">

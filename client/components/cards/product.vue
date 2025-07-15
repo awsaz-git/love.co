@@ -2,7 +2,11 @@
 import { ref, defineProps } from 'vue'
 
 const props = defineProps({
-    data: Object
+    data: Object,
+    isMiniDisplay: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const product = props.data
@@ -39,7 +43,7 @@ function getStock() {
 
 <template>
     <div class="card-container">
-        <ButtonsHeart class="wishlist-button" />
+        <ButtonsHeart v-if="!props.isMiniDisplay" class="wishlist-button" />
         <div v-if="getStock() === 0" class="sold-out subtitle-s">
             Sold Out
         </div>
@@ -48,7 +52,7 @@ function getStock() {
                 <img v-if="isLoaded" v-bind="imgAttrs" :src="src">
                 <div v-else class="placeholder-skeleton"></div>
             </NuxtImg>
-            <div v-if="isSelected && hasImageList()" class="image-list">
+            <div v-if="isSelected && hasImageList() && !props.isMiniDisplay" class="image-list">
                 <NuxtImg v-for="(image, index) in images.slice(0, 5)" @mouseover="changeDisplayImage(index)"
                     class="mini-image" :class="{ 'displayed': displayImage === index }" :key="index" :src="image"
                     v-slot="{ src, isLoaded, imgAttrs }">

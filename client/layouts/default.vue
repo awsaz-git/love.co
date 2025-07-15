@@ -1,4 +1,5 @@
 <template>
+    <ModalsAddedToCart />
     <nav>
         <NavigationNavbar />
     </nav>

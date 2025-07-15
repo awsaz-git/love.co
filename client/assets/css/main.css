@@ -149,6 +149,10 @@ a {
     border: none;
 }
 
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
 @media (max-width: 1024px) {
     .header-xl {
         font-size: 52px;
