@@ -6,5 +6,10 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   app: {
     pageTransition: false,
+  },
+  routeRules: {
+    '/api/**': {
+      proxy: 'http://localhost:5000/**'
+    }
   }
 })

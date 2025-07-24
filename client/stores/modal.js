@@ -3,26 +3,20 @@ import { defineStore } from "pinia";
 export const useModal = defineStore('modal', {
     state: () => ({
         isOpen: false,
-        openedModal: null,
-        quantity: null
+        data: null
     }),
     actions: {
-        toggle(name) {
+        toggle() {
             this.isOpen = !this.isOpen
-            this.openedModal = this.isOpen ? name : null
         },
-        open(name) {
+        open() {
             this.isOpen = true
-            this.openedModal = name
-        },
-        open(name, quantity) {
-            this.isOpen = true
-            this.openedModal = name
-            this.quantity = quantity
         },
         close() {
             this.isOpen = false
-            this.openedModal = null
+        },
+        setData(data) {
+            this.data = data
         }
     }
 })

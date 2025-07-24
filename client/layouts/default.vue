@@ -1,5 +1,9 @@
+<script setup>
+const modal = useModal()
+</script>
+
 <template>
-    <ModalsAddedToCart />
+    <ModalsAddedToCart :data="modal.data" />
     <nav>
         <NavigationNavbar />
     </nav>

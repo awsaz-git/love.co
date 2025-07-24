@@ -2,86 +2,89 @@
 import { X } from 'lucide-vue-next';
 import { getData, setData } from 'nuxt-storage/local-storage';
 
-const modal = useModal()
+const addToCartModal = useModal()
 
-const sku = ref(null)
-const quantity = ref(0)
-const totalQuantity = ref(0)
-const totalPrice = ref(0)
-const deliveryCost = ref(5)
-
-const { data, error, refresh } = await useFetch('http://localhost:5000/api/product-sku', {
-    query: { sku }
+const props = defineProps({
+    data: Object
 })
 
-function getDiscount(price, discount) {
+const cart = ref([])
+const deliveryFee = ref(5)
+
+const { data, error, refresh } = await useFetch('/api/cart', {
+    credentials: 'include'
+})
+
+const getDiscount = (price, discount) => {
     const discounted = price - (price * (discount / 100))
     return Math.ceil(discounted)
 }
 
-watch(() => modal.isOpen, async (isOpened) => {
-    if (!isOpened) return
+const getQuantity = () => {
+    let quantity = 0;
 
-    const cart = getData('cart') || null
-    if (cart === null) return
-
-    quantity.value = 0
-    totalQuantity.value = 0
-    totalPrice.value = 0
-
-    let index = cart.length - 1
-    sku.value = cart.at(index).sku
-    quantity.value = cart.at(index).quantity
-    cart.forEach(async item => {
-        const sku = item.sku
-        totalQuantity.value += item.quantity
-        const { data, error } = await useFetch('http://localhost:5000/api/product-sku', {
-            query: { sku }
-        })
-
-        totalPrice.value += data.value.product.price - (data.value.product.price * (data.value.product.discount / 100))
+    data.value.cart.forEach(el => {
+        quantity += el.quantity
     });
 
-    refresh()
+    return quantity
+}
+
+const getTotal = () => {
+    let total = 0;
+
+    data.value.cart.forEach(el => {
+        for (let i = 0; i < el.quantity; i++) {
+            total += getDiscount(Number(el.price), Number(el.discount))
+        }
+    });
+
+    return total
+}
+
+watch(() => addToCartModal.isOpen, async (isOpen) => {
+    if (isOpen) {
+        await refresh()
+    }
 })
 
 </script>
 
 <template>
     <Transition name="overlay">
-        <div v-if="modal.openedModal === 'addedToCart'" class="modal-container">
+        <div v-if="addToCartModal.isOpen" class="modal-container">
             <div class="modal-content">
                 <div class="header-s">
                     SUCCESSFULLY ADDED TO BAG
                 </div>
                 <div class="info">
                     <div class="product-card">
-                        <NuxtImg :src="data.product.image" class="image" />
+                        <NuxtImg :src="props.data.product.image" class="image" />
                         <div class="right-info">
                             <div class="title-m normal">
-                                {{ data.product.name.toUpperCase() }}
+                                {{ props.data.product.name.toUpperCase() }}
                             </div>
-                            <div v-if="Number(data.product.discount) === 0" class="title-m">
-                                ${{ data.product.price }}
+                            <div v-if="Number(props.data.product.discount) === 0" class="title-m">
+                                ${{ props.data.product.price }}
                             </div>
-                            <div v-if="data.product.discount > 0" class="title-m discount">
+                            <div v-if="props.data.product.discount > 0" class="title-m discount">
                                 <div class="original">
-                                    ${{ data.product.price }}
+                                    ${{ props.data.product.price }}
                                 </div>
-                                ${{ getDiscount(data.product.price, data.product.discount) }}
+                                ${{ getDiscount(props.data.product.price, props.data.product.discount) }}
                                 <div class="discount-amount">
-                                    -{{ data.product.discount }}%
+                                    -{{ props.data.product.discount }}%
                                 </div>
                             </div>
                             <div>
                                 <div class="title-m normal">
-                                    Color: {{ unslugify(data.product.color_name).join() }}
+                                    Color: {{ unslugify(props.data.product.color_name).join() }}
                                 </div>
                                 <div class="title-m normal">
-                                    Size: {{ unslugify(data.product.size).join() }}
+                                    Size: {{ unslugify(props.data.product.size).join() }}
                                 </div>
                                 <div class="title-m normal">
-                                    Quantity: {{ modal.quantity }}
+                                    Quantity: {{ props.data.quantity }}
                                 </div>
                             </div>
                         </div>
@@ -93,24 +96,24 @@ watch(() => modal.isOpen, async (isOpened) => {
                                 Your Bag
                             </div>
                             <div class="title-m normal">
-                                {{ totalQuantity }} Item
+                                {{ getQuantity() }} Item
                             </div>
                             <div class="title-m normal price">
-                                Product Cost: <span>${{ totalPrice }}</span>
+                                Product Cost: <span>${{ getTotal() }}</span>
                             </div>
                             <div class="title-m normal price">
-                                Delivery Cost: <span>${{ deliveryCost }}</span>
+                                Delivery Cost: <span>${{ deliveryFee }}</span>
                             </div>
                         </div>
                         <div class="line-2"></div>
                         <div class="title-m price">
-                            Total: <span>${{ totalPrice + deliveryCost }}</span>
+                            Total: <span>${{ getTotal() + deliveryFee }}</span>
                         </div>
-                        <ButtonsFilled to="/user/cart" class="view-bag-button" label="View Bag"
-                            @click="modal.close()" />
+                        <ButtonsFilled to="/cart" class="view-bag-button" label="View Bag"
+                            @click="addToCartModal.close()" />
                     </div>
                 </div>
-                <div class="exit-button" @click="modal.close()">
+                <div class="exit-button" @click="addToCartModal.close()">
                     <X />
                 </div>
             </div>
@@ -262,7 +265,7 @@ watch(() => modal.isOpen, async (isOpened) => {
     }
 
     .modal-container {
-        height: 100svh;
+        height: 100dvh;
         justify-content: end;
     }
 
@@ -290,6 +293,7 @@ watch(() => modal.isOpen, async (isOpened) => {
 
     .product-card {
         height: 150px;
+        width: 100%;
     }
 
     .info {

@@ -1,10 +1,35 @@
 import express from 'express';
+import dotenv from 'dotenv'
+dotenv.config()
 import sequelize from './db.js';
 import './models/index.js'
 import { getBrands, getNewArrivals, getOnSale, getProduct, completeTheLook, youMayAlsoLike, getCategories, getProductsWithFilter, getStyles, getAllProducts, search, getProductBySKU } from './filters.js'
 import cors from 'cors'
+import { addToCart, applyVoucher, getCart, getCartInfo, getCartQuantity, getVoucher, removeFromCart } from './cart.js';
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
+import { v4 } from 'uuid';
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}))
+
+app.use(express.json())
+app.use(cookieParser())
+app.use((req, res, next) => {
+    if (!req.cookies.cart_id) {
+        const cart_id = v4();
+        res.cookie('cart_id', cart_id, { httpOnly: true, maxAge: 86400000, sameSite: 'lax' })
+        req.cart_id = cart_id
+    } else {
+        req.cart_id = req.cookies.cart_id
+    }
+
+    next()
+})
 
 try {
     await sequelize.authenticate()
@@ -14,24 +39,26 @@ try {
     console.error('DB Connection Failed:', error)
 }
 
-app.use(cors({
-    origin: 'http://localhost:3000'
-}))
 
-
-app.get('/api/nav-bar', async (req, res) => {
+app.get('/nav-bar', async (req, res) => {
     try {
         const brands = await getBrands()
         const categories = await getCategories()
+        const cartItems = await getCartQuantity(req.cart_id)
+        let quantity = 0
 
-        res.json({ brands, categories })
+        cartItems.forEach(item => {
+            quantity += Number(item.quantity)
+        })
+
+        res.json({ brands, categories, quantity })
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Failed to fetch nav bar data' })
     }
 })
 
-app.get('/api/home-page', async (req, res) => {
+app.get('/home-page', async (req, res) => {
     try {
         const brands = await getBrands()
 
@@ -46,7 +73,7 @@ app.get('/api/home-page', async (req, res) => {
     }
 });
 
-app.get('/api/product-code/:code', async (req, res) => {
+app.get('/product-code/:code', async (req, res) => {
     try {
         const [product] = await getProduct(req.params.code)
 
@@ -65,7 +92,7 @@ app.get('/api/product-code/:code', async (req, res) => {
     }
 })
 
-app.get('/api/products/:filters', async (req, res) => {
+app.get('/products/:filters', async (req, res) => {
     try {
         const categories = await getCategories()
         const brands = await getBrands()
@@ -79,7 +106,7 @@ app.get('/api/products/:filters', async (req, res) => {
     }
 })
 
-app.get('/api/search', async (req, res) => {
+app.get('/search', async (req, res) => {
     try {
         const searchQuery = req.query.searchValue || ''
         const products = await search(searchQuery.split(' ').join(' and '))
@@ -91,7 +118,7 @@ app.get('/api/search', async (req, res) => {
     }
 })
 
-app.get('/api/product-sku', async (req, res) => {
+app.get('/product-sku', async (req, res) => {
     try {
         const [product] = await getProductBySKU(req.query.sku)
 
@@ -102,4 +129,53 @@ app.get('/api/product-sku', async (req, res) => {
     }
 })
 
-app.listen(5000)
+app.post('/cart', async (req, res) => {
+    try {
+        const { sku, quantity } = req.body
+
+        res.json(await addToCart(sku, quantity, req.cart_id))
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add to cart' })
+    }
+})
+
+app.get('/cart', async (req, res) => {
+    try {
+        const cart = await getCart(req.cart_id)
+        const [info] = await getCartInfo(req.cart_id)
+        if (info.voucher_code) {
+            const [voucher] = await getVoucher(info.voucher_code)
+            res.json({ cart, info, voucher })
+        }
+
+        res.json({ cart, info })
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add to cart' })
+    }
+})
+
+app.delete('/cart/:sku', async (req, res) => {
+    try {
+        const result = await removeFromCart(req.params.sku, req.cart_id)
+
+        res.json({ result })
+    } catch (error) {
+        res.status(500).json({ error: 'Could not delete item' })
+    }
+})
+
+app.get('/voucher/:voucher', async (req, res) => {
+    try {
+        const [voucher] = await getVoucher(req.params.voucher)
+
+        if (voucher) {
+            await applyVoucher(req.cart_id, voucher.code, voucher.discount_value, voucher.discount_type)
+        }
+
+        res.json({ voucher })
+    } catch (error) {
+        res.status(500).json({ error: 'Could not fetch voucher' })
+    }
+})
+
+app.listen(process.env.PORT)

@@ -52,6 +52,12 @@ a {
     font-weight: 700;
 }
 
+.header-xs {
+    font-family: 'Integral CF';
+    font-size: 22px;
+    font-weight: 700;
+}
+
 .title-xxl {
     font-size: 36px;
     font-weight: 700;
@@ -115,6 +121,10 @@ a {
 
 .medium {
     font-weight: 500 !important;
+}
+
+.semibold {
+    font-weight: 600 !important;
 }
 
 .opacity-light {

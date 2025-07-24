@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const { data, error } = await useFetch('http://localhost:5000/api/home-page')
+const { data, error } = await useFetch('/api/home-page')
 
 const images = [
     '/images/featured1.png',

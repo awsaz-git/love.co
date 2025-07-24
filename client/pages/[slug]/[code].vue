@@ -1,12 +1,10 @@
 <script setup>
-import { ref, computed, onMounted, nextTick, capitalize } from 'vue'
+import { nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { Check, ArrowDown, ArrowUp, Minus, Plus, AlertCircle } from 'lucide-vue-next'
-import { getData, setData } from 'nuxt-storage/local-storage';
 
 const route = useRoute()
 const code = route.params.code
-const slug = route.params.slug
 
 const displayedImage = ref(0)
 const selectedColor = ref(0)
@@ -22,10 +20,14 @@ const isAtBottom = ref(false)
 const reviewsShown = ref(6)
 const shownSuggestions = ref(4)
 const miniImagesWrapper = ref(null)
-const modal = useModal()
 const stockError = ref(false)
+const cartData = ref(null)
+const cartError = ref(null)
+const addToCartModal = useModal()
+const navbarRefresh = useNavbarRefresh()
+const loadingModal = ref(false)
 
-const { data, error } = await useFetch('http://localhost:5000/api/product-code/' + code)
+const { data, pending, error } = await useFetch('/api/product-code/' + code)
 
 const changeDisplayImage = (index) => {
     displayedImage.value = index;
@@ -131,34 +133,39 @@ function incrementQuantity(colorsList) {
     stockError.value = false
 }
 
-const addToCart = async (color, size) => {
+const addToCart = async (color, size, quantity) => {
+
     if (selectedSize.value === null) {
         sizeError.value = true
         return
     }
 
+    loadingModal.value = true
+
     const sku = code.toUpperCase() + '-' + color.toUpperCase() + '-' + size.toUpperCase()
-    let cart = getData('cart') || []
 
-    const itemIndex = cart.findIndex(item => item.sku === sku)
-
-    const { data } = await useFetch('http://localhost:5000/api/product-sku', {
-        query: { sku }
+    const { data: newData, error: newError } = await useFetch('/api/cart', {
+        method: 'post',
+        credentials: 'include',
+        body: {
+            sku: sku,
+            quantity: quantity
+        }
     })
 
-    if (itemIndex !== -1) {
-        if (cart[itemIndex].quantity < data.value.product.stock) {
-            cart[itemIndex].quantity += quantity.value
-        } else {
-            stockError.value = true;
-            return
-        }
-    } else {
-        cart.push({ sku, quantity: quantity.value })
+    cartData.value = newData.value
+    cartError.value = newError.value
+
+    if (cartData.value?.error) {
+        stockError.value = true
     }
 
-    setData('cart', cart, 24, 'h')
-    modal.open('addedToCart', quantity.value)
+    if (cartData.value?.product) {
+        addToCartModal.setData(cartData.value)
+        navbarRefresh.toggle()
+        loadingModal.value = false
+        addToCartModal.open()
+    }
 }
 
 
@@ -367,8 +374,8 @@ onMounted(miniImagesWrapper.value, () => {
                     </div>
                     <ButtonsFilled v-if="getStock(data.product.colors) !== 0" height="45px" width="70%"
                         label="ADD TO BAG" @click="addToCart(data.product.colors[selectedColor].name,
-                            data.product.colors[selectedColor].sizes[selectedSize]?.name)"
-                        :class="{ 'stock-error': stockError }" />
+                            data.product.colors[selectedColor].sizes[selectedSize]?.name, quantity)"
+                        :class="{ 'stock-error': stockError }" :disabled="pending" :loading="loadingModal" />
                     <ButtonsFilled v-if="getStock(data.product.colors) === 0" height="45px" width="70%" disabled
                         disabledLabel="OUT OF STOCK" />
                 </div>
@@ -928,6 +935,21 @@ ul {
 li.description-item {
     margin: 0;
     padding: 0;
+}
+
+.overlay-enter-active,
+.overlay-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.overlay-enter-from,
+.overlay-leave-to {
+    opacity: 0;
+}
+
+.overlay-enter-to,
+.overlay-leave-from {
+    opacity: 1;
 }
 
 @keyframes pulseOpacity {

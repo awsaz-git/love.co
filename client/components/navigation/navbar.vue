@@ -1,5 +1,5 @@
 <script setup>
-import { Search, ShoppingBag, CircleUserRound, Heart, AlignJustify } from 'lucide-vue-next'
+import { Search, ShoppingBag, CircleUserRound, Heart, AlignJustify, Dot } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useNavSidebarStore } from '~/stores/navSidebar.js'
 import { getData, setData } from 'nuxt-storage/local-storage';
@@ -12,11 +12,13 @@ const searchContainerOpen = ref(false)
 const isSidebarOpen = useNavSidebarStore()
 const searchValue = ref('')
 const searchHistory = ref([])
+const navbarRefresh = useNavbarRefresh()
 
-const { data: navData, error: navError } = await useFetch('http://localhost:5000/api/nav-bar')
-const { data: searchData, pending: searchPending, error: searchError, refresh: search } = await useFetch('http://localhost:5000/api/search', {
+const { data: navData, error: navError, refresh } = await useFetch('/api/nav-bar')
+const { data: searchData, pending: searchPending, error: searchError, refresh: search } = await useFetch('/api/search', {
     query: { searchValue }
 })
+
 
 const scrollToTop = () => {
     window.scrollTo({
@@ -63,13 +65,20 @@ watch(searchValue, async () => {
     await search()
 })
 
+watch(() => navbarRefresh.refresh, async (isRefresh) => {
+    if (isRefresh) {
+        await refresh()
+        navbarRefresh.toggle()
+    }
+})
+
 </script>
 
 <template>
     <div class="nav-container">
         <div class="nav-discount">
             <NuxtLink to="/products/on_sale" class="subtitle-l discount-text">
-                SUMMER SALE NOW ON! UP TO 70% OFF!
+                SUMMER SALE NOW ON! USE CODE IMBROKE FOR 20% OFF!
             </NuxtLink>
         </div>
         <div class="nav-content">
@@ -114,8 +123,13 @@ watch(searchValue, async () => {
                     <Heart :stroke-width="1" />
                 </NuxtLink>
                 <CircleUserRound :stroke-width="1" />
-                <NuxtLink class="action" to="/user/cart">
+                <NuxtLink class="action bag-icon" to="/cart">
                     <ShoppingBag :stroke-width="1" />
+                    <Transition name="pop">
+                        <div v-if="navData.quantity > 0" class="cart-item">
+                            {{ navData.quantity }}
+                        </div>
+                    </Transition>
                 </NuxtLink>
             </div>
         </div>
@@ -125,8 +139,13 @@ watch(searchValue, async () => {
             </NuxtLink>
             <div class="actions">
                 <Search :stroke-width="1" @click="toggleSearchContainer()" />
-                <NuxtLink class="action" to="/user/cart">
+                <NuxtLink class="action bag-icon" to="/cart">
                     <ShoppingBag :stroke-width="1" />
+                    <Transition name="pop">
+                        <div v-if="navData.quantity > 0" class="cart-item">
+                            {{ navData.quantity }}
+                        </div>
+                    </Transition>
                 </NuxtLink>
                 <AlignJustify @click="isSidebarOpen.open()" :stroke-width="1" />
                 <ButtonsNavSidebar v-if="!navError" :data="navData" />
@@ -204,6 +223,7 @@ watch(searchValue, async () => {
 
 .discount-text {
     color: #FFFFFF !important;
+    text-align: center;
 }
 
 .discount-text:hover {
@@ -299,6 +319,29 @@ watch(searchValue, async () => {
     align-items: center;
 }
 
+.bag-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.cart-item {
+    position: absolute;
+    background-color: #000000;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1/1;
+    width: 20px;
+    height: 20px;
+    top: -10px;
+    right: -10px;
+    color: #FFFFFF !important;
+    font-size: 10px;
+}
+
 .search-laptop-view {
     display: none;
 }
@@ -362,6 +405,7 @@ watch(searchValue, async () => {
 
 .result-text {
     width: 90%;
+    overflow: hidden;
 }
 
 .result-text.not-found {
@@ -467,6 +511,23 @@ watch(searchValue, async () => {
     width: 100vw;
     height: 100vh;
     z-index: 99998;
+}
+
+.pop-enter-active,
+.pop-leave-active {
+    transition: all 0.2s ease;
+}
+
+.pop-enter-from,
+.pop-leave-to {
+    transform: scale(0.5);
+    opacity: 0;
+}
+
+.pop-enter-to,
+.pop-leave-from {
+    transform: scale(1);
+    opacity: 1;
 }
 
 @media (max-width: 1200px) {

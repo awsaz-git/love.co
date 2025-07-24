@@ -11,7 +11,7 @@ const queryParams = new URLSearchParams()
 if (route.query.price) queryParams.append('price', route.query.price)
 if (route.query.search) queryParams.append('search', route.query.search)
 
-const url = `http://localhost:5000/api/products/${slug}` +
+const url = `/api/products/${slug}` +
     (queryParams.toString() ? `?${queryParams.toString()}` : '')
 
 let { data, pending, error } = await useFetch(url)
@@ -167,7 +167,7 @@ const updateURL = async () => {
     if (route.query.price) queryParams.append('price', route.query.price)
     if (route.query.search) queryParams.append('search', route.query.search)
 
-    const url = `http://localhost:5000/api/products/${newSlug}` +
+    const url = `/api/products/${newSlug}` +
         (queryParams.toString() ? `?${queryParams.toString()}` : '')
 
     let { data, pending, error } = await useFetch(url)
@@ -214,7 +214,7 @@ const sort = async (name) => {
     })
 
     const queryString = params.toString()
-    const fullUrl = `http://localhost:5000/api${route.path}${queryString ? '?' + queryString : ''}`
+    const fullUrl = `/api${route.path}${queryString ? '?' + queryString : ''}`
 
     console.log(fullUrl)
 

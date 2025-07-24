@@ -227,7 +227,7 @@ const isDropdownOpen = (name) => {
 
 @media (max-width: 960px) {
     .nav-sidebar-container {
-        height: 100svh;
+        height: 100vh;
     }
 
     .overlay {
